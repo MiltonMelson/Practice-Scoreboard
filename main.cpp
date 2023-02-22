@@ -5,43 +5,21 @@ using namespace std;
 
 long getHash(string name);
 string getScore(long key);
+void enterName();
+void viewScore();
 
 int main(int argc, char* argv[]) {
-
-   cout << "At anytime to exit the program type 'exit'" << endl;
-
-   ofstream ofile;          // cout replacement
-   ofile.open("names.txt", ios::app);
-   if (!ofile.is_open()) {
-      cout << "Error: failed to open file for writing..." << endl;
-      return -1;
-   }
-
-   int score = 0;
-   while (ofile.is_open()) {
-      cout << "Enter your name: ";
-      string name;
-      cin >> name;
-      if (name.compare("exit") != 0) {
-         long index = getHash(name);
-         ofile << index << " " << name << " " << score++ << "\n";
-         continue;
-      }
-      ofile.close();
-   }
-   cout << endl;
-
-   while (true) {
-      string name;
-      cout << "Enter your name to see your score: ";
-      cin >> name;
-      if (name.compare("exit") == 0) {
-         cout << "\n\nGoodbye..." << endl;
+   cout << "\nWelcome, this program stores names in a database and gives them random score.\n";
+   cout << " You can then search names in the database to view their score.\n";
+   string exit = "";
+   while (exit.compare("exit") != 0) {
+      enterName();
+      viewScore();
+      cout << "To enter more names type 'more', otherwise type 'exit': ";
+      cin >> exit;
+      if (exit.compare("exit") == 0) {
          break;
       }
-      long key = getHash(name);
-      string points = getScore(key);
-      cout << name << ": " << points << endl;
    }
    return 0;
 }
@@ -62,8 +40,7 @@ string getScore(long key) {
          return word;
       }
    }
-   cout << "Sorry did not find your name" << endl;
-   return "";
+   return "-1";
 }
 
 long getHash(string name) {
@@ -72,4 +49,50 @@ long getHash(string name) {
       key = key * 7 + name[i];
    }
    return key;
+}
+
+void enterName() {
+   ofstream ofile;          // cout replacement
+   ofile.open("names.txt", ios::app);
+   if (!ofile.is_open()) {
+      cout << "Error: failed to open file for writing..." << endl;
+      return;
+   }
+   int score = -1;
+   while (score == -1) {
+      cout << "Enter your name: ";
+      string name;
+      cin >> name;
+      long index = getHash(name);
+      if (getScore(index) != "-1") {
+         cout << "Sorry that username is already taken, try again." << endl;
+      }
+      else {
+         score = index%10;
+         ofile << index << " " << name << " " << score << "\n";
+      }
+   }
+   cout << endl;
+   ofile.close();
+}
+
+void viewScore() {
+   while (true) {
+      string name;
+      cout << "To see your score, please enter your name: ";
+      cin >> name;
+      if (name.compare("done") == 0) {
+         cout << "\n\nGoodbye..." << endl;
+         return;
+      }
+      long key = getHash(name);
+      string points = getScore(key);
+      cout << name << ": " << points << endl;
+      cout << endl;
+      cout << "If you want to see more scores type 'more', otherwise type 'done'" << endl;
+      cin >> name;
+      if (name.compare("done") == 0) {
+         return;
+      }
+   }
 }
