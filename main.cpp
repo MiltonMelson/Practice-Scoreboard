@@ -28,6 +28,7 @@ void enterLobby() {
       cout << "2. To view a individuals score.\n";
       cout << "3. To view the scoreboard.\n";
       cout << "4. To exit.\n";
+      cout << "--> ";
       cin >> input;
       switch(input) {
          case 1:
@@ -107,29 +108,18 @@ void lowercase(string &name) {
 }
 
 void viewScore() {
-   while (true) {
-      string name;
-      cout << "To see your score, please enter your name: ";
-      cin >> name;
-      if (name.compare("done") == 0) {
-         cout << "\n\nGoodbye..." << endl;
-         return;
-      }
-      lowercase(name);
-      string key = getHash(name);
-      string points = getScore(key);
-      if (points != "-1") {
-         cout << name << ": " << points << endl;
-         cout << endl;
-      }
-      else {
-         cout << "Sorry that name is not in our database." << endl;
-      }
-      cout << "If you want to see more scores type 'more', otherwise type 'done'" << endl;
-      cin >> name;
-      if (name.compare("done") == 0) {
-         return;
-      }
+   string name;
+   cout << "To see your score, please enter your name: ";
+   cin >> name;
+   lowercase(name);
+   string key = getHash(name);
+   string points = getScore(key);
+   if (points != "-1") {
+      cout << "\n" << name << ": " << points << endl;
+      cout << endl;
+   }
+   else {
+      cout << "\nSorry that name is not in our database.\n" << endl;
    }
 }
 
